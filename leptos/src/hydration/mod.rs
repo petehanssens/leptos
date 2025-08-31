@@ -135,6 +135,8 @@ pub fn HydrationScripts(
         .unwrap_or_default();
 
     let root = root.unwrap_or_default();
+    // Handle crossorigin attribute properly - use nonce when available, None when not
+    let crossorigin_attr = nonce.clone();
     view! {
         <link rel="modulepreload" href=format!("{root}/{pkg_path}/{js_file_name}.js") crossorigin=nonce.clone()/>
         <link
@@ -142,7 +144,7 @@ pub fn HydrationScripts(
             href=format!("{root}/{pkg_path}/{wasm_file_name}.wasm")
             r#as="fetch"
             r#type="application/wasm"
-            crossorigin=nonce.clone().unwrap_or_default()
+            crossorigin=crossorigin_attr
         />
         <script type="module" nonce=nonce>
             {format!("{script}({root:?}, {pkg_path:?}, {js_file_name:?}, {wasm_file_name:?});{islands_router}")}
